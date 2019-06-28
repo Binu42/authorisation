@@ -4,7 +4,7 @@
   <h1>Login</h1>
 
   <div class="row">
-    <div class="col-sm-8">
+    <div class="col-lg-8 col-sm-12">
       <div class="card">
         <div class="card-body">
 
@@ -12,11 +12,11 @@
           <form action="/login" method="POST">
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" class="form-control" name="username">
+              <input type="email" class="form-control" name="username" id="email">
             </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" class="form-control" name="password">
+              <input type="password" class="form-control" name="password" id="password">
             </div>
             <button type="submit" class="btn btn-dark">Login</button>
           </form>
@@ -25,16 +25,28 @@
       </div>
     </div>
 
-    <!-- <div class="col-sm-4">
-      <div class="card">
+    <div class="col-lg-4 col-sm-12">
+      <div class="card social-block spl">
         <div class="card-body">
-          <a class="btn btn-block" href="/auth/google" role="button">
+          <a class="btn btn-block btn-danger" href="/auth/google" role="button">
             <i class="fab fa-google"></i>
-            Sign In with Google
+            Sign Up with Google
+          </a>
+          <a class="btn btn-block btn-dark" href="/auth/github" role="button">
+            <i class="fab fa-github"></i>
+            Sign Up with Github
+          </a>
+          <a class="btn btn-block btn-primary" href="/auth/facebook" role="button">
+            <i class="fab fa-facebook"></i>
+            Sign Up with Facebook
+          </a>
+          <a class="btn btn-block btn-info" href="/auth/linkedin" role="button">
+            <i class="fab fa-linkedin"></i>
+            Sign Up with Linkedin
           </a>
         </div>
       </div>
-    </div> -->
+    </div>
 
   </div>
 </div>
