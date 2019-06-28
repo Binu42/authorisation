@@ -9,6 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "10.16.0"
+  },
   "dependencies": {
     "@sokratis/passport-linkedin-oauth2": "^2.1.0",
     "bcrypt": "^3.0.6",
