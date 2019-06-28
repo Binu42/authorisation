@@ -59,7 +59,7 @@ passport.deserializeUser(function (id, done) {
 passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/secrets",
+    callbackURL: "https://secretwhisper.herokuapp.com/auth/google/secrets",
     userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
   },
   function (accessToken, refreshToken, profile, cb) {
@@ -76,7 +76,7 @@ passport.use(new GoogleStrategy({
 passport.use(new FacebookStrategy({
     clientID: process.env.fb_ID,
     clientSecret: process.env.fb_app_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/secret"
+    callbackURL: "https://secretwhisper.herokuapp.com/auth/facebook/secret"
   },
   function (accessToken, refreshToken, profile, cb) {
     User.findOrCreate({
@@ -91,7 +91,7 @@ passport.use(new FacebookStrategy({
 passport.use(new GitHubStrategy({
     clientID: process.env.github_CLIENT_ID,
     clientSecret: process.env.github_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/github/secrets"
+    callbackURL: "https://secretwhisper.herokuapp.com/auth/github/secrets"
   },
   function (accessToken, refreshToken, profile, cb) {
     User.findOrCreate({
@@ -106,7 +106,7 @@ passport.use(new GitHubStrategy({
 passport.use(new LinkedInStrategy({
     clientID: process.env.linkedin_CLIENT_ID,
     clientSecret: process.env.linkedin_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/linkedin/secrets",
+    callbackURL: "https://secretwhisper.herokuapp.com/auth/linkedin/secrets",
     scope: ['r_emailaddress', 'r_liteprofile'],
     state: true,
   },
