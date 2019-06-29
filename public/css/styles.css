@@ -30,3 +30,8 @@ footer{
   margin-top: 10px;
 }
 
+.text-box{
+  text-align: center;
+  color: #050505;
+  background: #f7dede;
+}

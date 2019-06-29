@@ -277,6 +277,10 @@ app.post('/login', function (req, res) {
   });
 });
 
+app.get('/privacy', function(req, res){
+  res.render('privacy');
+});
+
 app.listen(process.env.PORT || 3000, function (req, res) {
   console.log('server is running at port 3000');
 });
