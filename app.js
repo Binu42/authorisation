@@ -27,10 +27,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// connecting to database
 mongoose.connect('mongodb+srv://admin-Binu:'+ process.env.password +'@cluster0-9npsv.mongodb.net/userDB', {
   useNewUrlParser: true
 });
 mongoose.set('useCreateIndex', true);
+
+// User Scheme at database
 const userSchema = new mongoose.Schema({
   email: String,
   password: String,
@@ -56,6 +59,7 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
+// Google strategy for authentication
 passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
@@ -73,6 +77,7 @@ passport.use(new GoogleStrategy({
   }
 ));
 
+// Facebook strategy for authentication
 passport.use(new FacebookStrategy({
     clientID: process.env.fb_ID,
     clientSecret: process.env.fb_app_SECRET,
@@ -88,6 +93,7 @@ passport.use(new FacebookStrategy({
   }
 ));
 
+// Github strategy for authentication
 passport.use(new GitHubStrategy({
     clientID: process.env.github_CLIENT_ID,
     clientSecret: process.env.github_CLIENT_SECRET,
@@ -103,25 +109,14 @@ passport.use(new GitHubStrategy({
   }
 ));
 
+// Linkedin strategy for authentication
 passport.use(new LinkedInStrategy({
     clientID: process.env.linkedin_CLIENT_ID,
     clientSecret: process.env.linkedin_CLIENT_SECRET,
     callbackURL: "https://secretwhisper.herokuapp.com/auth/linkedin/secrets",
     scope: ['r_emailaddress', 'r_liteprofile'],
     state: true,
-  },
-  // function (accessToken, refreshToken, profile, done) {
-  //   console.log(profile);
-  //   // asynchronous verification, for effect...
-  //   process.nextTick(function () {
-  //     // To keep the example simple, the user's LinkedIn profile is returned to
-  //     // represent the logged-in user. In a typical application, you would want
-  //     // to associate the LinkedIn account with a user record in your database,
-  //     // and return that user instead.
-  //     return done(null, profile);
-  //   });
-  // }
-  function (accessToken, refreshToken, profile, cb) {
+  }, function (accessToken, refreshToken, profile, cb) {
     User.findOrCreate({
       linkedinId: profile.id,
       name: profile.displayName
@@ -131,49 +126,57 @@ passport.use(new LinkedInStrategy({
   }
 ));
 
+// Home router
 app.get('/', function (req, res) {
   res.render('home');
 });
 
+// router for authorising google account
 app.get('/auth/google',
   passport.authenticate('google', {
     scope: ['profile']
   })
 );
 
+// router to receive request result from google
 app.get('/auth/google/secrets',
   passport.authenticate('google', {
     failureRedirect: '/login'
   }),
   function (req, res) {
-    // Successful authentication, redirect home.
+    // Successful authentication, redirect secrets.
     res.redirect('/secrets');
   });
 
+// router for authorising facebook account
 app.get('/auth/facebook',
   passport.authenticate('facebook'));
 
+// router to receive request from facebook
 app.get('/auth/facebook/secrets',
   passport.authenticate('facebook', {
     failureRedirect: '/login'
   }),
   function (req, res) {
-    // Successful authentication, redirect home.
+    // Successful authentication, redirect secrets.
     res.redirect('/secrets');
   });
 
+// router for authorising Github account
 app.get('/auth/github',
   passport.authenticate('github'));
 
+// router to receive request from Github
 app.get('/auth/github/secrets',
   passport.authenticate('github', {
     failureRedirect: '/login'
   }),
   function (req, res) {
-    // Successful authentication, redirect home.
+    // Successful authentication, redirect secrets.
     res.redirect('/secrets');
   });
 
+// router for authorising linkedin account
 app.get('/auth/linkedin',
   passport.authenticate('linkedin'),
   function (req, res) {
@@ -181,19 +184,23 @@ app.get('/auth/linkedin',
     // function will not be called.
   });
 
+// router to receive request from linkedin
 app.get('/auth/linkedin/secrets', passport.authenticate('linkedin', {
-  successRedirect: '/secrets',
-  failureRedirect: '/login'
+  successRedirect: '/secrets',    // successful authentication, redirect to secrets.
+  failureRedirect: '/login'       // else redirect login
 }));
 
+// router for login page
 app.get('/login', function (req, res) {
   res.render('login');
 });
 
+// router for register page
 app.get('/register', function (req, res) {
   res.render('register');
 });
 
+// router for secrets page
 app.get('/secrets', function (req, res) {
   User.find({
     secret: {
@@ -212,6 +219,7 @@ app.get('/secrets', function (req, res) {
   });
 });
 
+// router for submitting secrets
 app.get('/submit', function (req, res) {
   if (req.isAuthenticated()) {
     res.render("submit");
@@ -220,6 +228,7 @@ app.get('/submit', function (req, res) {
   }
 });
 
+// router for when secrets are submitted
 app.post('/submit', function (req, res) {
   const submitedSecret = req.body.secret;
   User.findById(req.user.id, function (error, user) {
@@ -240,11 +249,13 @@ app.post('/submit', function (req, res) {
   });
 });
 
+// Router for logout of users
 app.get('/logout', function (req, res) {
   req.logout();
   res.redirect('/');
 });
 
+// router for creating new user and getting there submitted data
 app.post('/register', function (req, res) {
   User.register({
     username: req.body.username
@@ -260,6 +271,7 @@ app.post('/register', function (req, res) {
   });
 });
 
+// router for login of user and getting there submitted data and matching it with our own database
 app.post('/login', function (req, res) {
   const user = new User({
     username: req.body.username, // Twist
@@ -277,6 +289,7 @@ app.post('/login', function (req, res) {
   });
 });
 
+// Privacy page for getting authentication of facebook.
 app.get('/privacy', function(req, res){
   res.render('privacy');
 });
