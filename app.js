@@ -28,7 +28,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // connecting to database
-mongoose.connect('mongodb+srv://admin-Binu:'+ process.env.password +'@cluster0-9npsv.mongodb.net/userDB', {
+mongoose.connect('mongodb+srv://admin-Binu:' + process.env.password + '@cluster0-9npsv.mongodb.net/userDB', {
   useNewUrlParser: true
 });
 mongoose.set('useCreateIndex', true);
@@ -111,20 +111,19 @@ passport.use(new GitHubStrategy({
 
 // Linkedin strategy for authentication
 passport.use(new LinkedInStrategy({
-    clientID: process.env.linkedin_CLIENT_ID,
-    clientSecret: process.env.linkedin_CLIENT_SECRET,
-    callbackURL: "https://secretwhisper.herokuapp.com/auth/linkedin/secrets",
-    scope: ['r_emailaddress', 'r_liteprofile'],
-    state: true,
-  }, function (accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({
-      linkedinId: profile.id,
-      name: profile.displayName
-    }, function (err, user) {
-      return cb(err, user);
-    });
-  }
-));
+  clientID: process.env.linkedin_CLIENT_ID,
+  clientSecret: process.env.linkedin_CLIENT_SECRET,
+  callbackURL: "https://secretwhisper.herokuapp.com/auth/linkedin/secrets",
+  scope: ['r_emailaddress', 'r_liteprofile'],
+  state: true,
+}, function (accessToken, refreshToken, profile, cb) {
+  User.findOrCreate({
+    linkedinId: profile.id,
+    name: profile.displayName
+  }, function (err, user) {
+    return cb(err, user);
+  });
+}));
 
 // Home router
 app.get('/', function (req, res) {
@@ -186,8 +185,8 @@ app.get('/auth/linkedin',
 
 // router to receive request from linkedin
 app.get('/auth/linkedin/secrets', passport.authenticate('linkedin', {
-  successRedirect: '/secrets',    // successful authentication, redirect to secrets.
-  failureRedirect: '/login'       // else redirect login
+  successRedirect: '/secrets', // successful authentication, redirect to secrets.
+  failureRedirect: '/login' // else redirect login
 }));
 
 // router for login page
@@ -202,21 +201,25 @@ app.get('/register', function (req, res) {
 
 // router for secrets page
 app.get('/secrets', function (req, res) {
-  User.find({
-    secret: {
-      $ne: null
-    }
-  }, function (error, founduser) {
-    if (error) {
-      console.log(error);
-    } else {
-      if (founduser) {
-        res.render('secrets', {
-          usersWithSecrets: founduser
-        });
+  if (req.isAuthenticated()) {
+    User.find({
+      secret: {
+        $ne: null
       }
-    }
-  });
+    }, function (error, founduser) {
+      if (error) {
+        console.log(error);
+      } else {
+        if (founduser) {
+          res.render('secrets', {
+            usersWithSecrets: founduser
+          });
+        }
+      }
+    });
+  }else{
+    res.redirect('/login');
+  }
 });
 
 // router for submitting secrets
@@ -290,10 +293,10 @@ app.post('/login', function (req, res) {
 });
 
 // Privacy page for getting authentication of facebook.
-app.get('/privacy', function(req, res){
+app.get('/privacy', function (req, res) {
   res.render('privacy');
 });
 
-app.listen(process.env.PORT || 3000, function (req, res) {
-  console.log('server is running at port 3000');
+app.listen(process.env.PORT || 4000, function (req, res) {
+  console.log('server is running at port 4000');
 });
